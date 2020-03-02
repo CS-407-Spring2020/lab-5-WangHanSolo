@@ -6,40 +6,49 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
 public class MainActivity extends AppCompatActivity {
-    public void clickFunction1( View view){
-        Log.i("info","button1 pressed");
-        EditText myTextField=(EditText) findViewById(R.id.editText_username);
-        //Toast.makeText(MainActivity.this,myTextField.getText().toString(),Toast.LENGTH_LONG).show();
-        String str=myTextField.getText().toString();
+    String usernameKey = "username";
 
-        SharedPreferences sharedPreferences =
-                getSharedPreferences("c.sakshi.lab5", Context.MODE_PRIVATE);
-        sharedPreferences.edit().putString("username", str).apply(); // save username in prefer
 
-        gotoActivity2();
+    public void clickFunction(View view){
+
+        //1. Get username and password via EditText view
+        EditText myTextField =  findViewById(R.id.editText);
+        String str = myTextField.getText().toString();
+        //2. Add username to SharedPreferences object
+        SharedPreferences sharedPreferences = getSharedPreferences("c.sakshi.lab5", Context.MODE_PRIVATE);
+        sharedPreferences.edit().putString("username",str).apply();
+        //3. Other Work
+        //Toast.makeText(MainActivity.this, myTextField.getText().toString(), Toast.LENGTH_LONG).show();
+
+        goToActivity2(str);
     }
 
-    public void gotoActivity2(){
-        Intent intent=new Intent(this,Main2Activity.class);
+    public void goToActivity2(String s){
+        Intent intent = new Intent(this,Main2Activity.class);
+        intent.putExtra("message",s);
         startActivity(intent);
     }
+
+
+    private Button button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        String userNameKey="username";
-        SharedPreferences sharedPreferences =
-                getSharedPreferences("c.sakshi.lab5", Context.MODE_PRIVATE);
 
-        if(!sharedPreferences.getString(userNameKey,"").equals("")){
-            String username_give=sharedPreferences.getString(userNameKey,"");
-            gotoActivity2();
+
+        SharedPreferences sharedPreferences = getSharedPreferences("c.sakshi.lab5", Context.MODE_PRIVATE);
+
+        if(!sharedPreferences.getString(usernameKey,"").equals("")){
+            Intent intent = new Intent(this,Main2Activity.class);
+            String s = sharedPreferences.getString("username","");
+            intent.putExtra("message",s);
+            startActivity(intent);
         }else{
             setContentView(R.layout.activity_main);
         }
